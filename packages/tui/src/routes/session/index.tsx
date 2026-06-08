@@ -259,6 +259,7 @@ export function Session() {
   const [diffWrapMode] = kv.signal<"word" | "none">("diff_wrap_mode", "word")
   const [_animationsEnabled, _setAnimationsEnabled] = kv.signal("animations_enabled", true)
   const [showGenericToolOutput, setShowGenericToolOutput] = kv.signal("generic_tool_output_visibility", false)
+  const [autoaccept, setAutoaccept] = kv.signal<"none" | "edit">("permission_auto_accept", "edit")
 
   const wide = createMemo(() => dimensions().width > 120)
   const sidebarVisible = createMemo(() => {
@@ -739,6 +740,15 @@ export function Session() {
       category: "Session",
       run: () => {
         setShowGenericToolOutput((prev) => !prev)
+        dialog.clear()
+      },
+    },
+    {
+      title: autoaccept() === "none" ? "Enable auto-accept edit permissions" : "Disable auto-accept edit permissions",
+      value: "permission.auto_accept.toggle",
+      category: "Agent",
+      run: () => {
+        setAutoaccept((prev) => (prev === "none" ? "edit" : "none"))
         dialog.clear()
       },
     },
